@@ -9,17 +9,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7109ABCE-9946-4915-9372-CC261FA9A292}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePoc.Sql", "src\Infrastructure\SamplePoc.Sql\SamplePoc.Sql.csproj", "{ECF2E7E0-6545-471C-BA92-5191AF37E9A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePoc.Sql", "src\Infrastructure\SamplePoc.Sql\SamplePoc.Sql.csproj", "{ECF2E7E0-6545-471C-BA92-5191AF37E9A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePoc.Host", "src\Startup\SamplePoc.Host\SamplePoc.Host.csproj", "{DF749CF6-BB44-4826-8CDF-A2340120B809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePoc.Services", "src\Core\SamplePoc.Services\SamplePoc.Services.csproj", "{67D9AB59-0A47-4635-BBD5-B681F9C71EAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePoc.Services", "src\Core\SamplePoc.Services\SamplePoc.Services.csproj", "{67D9AB59-0A47-4635-BBD5-B681F9C71EAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePoc.Services.Abstraction", "src\Core\SamplePoc.Services.Abstraction\SamplePoc.Services.Abstraction.csproj", "{2AB21D66-39FB-4926-AF12-3307CA964D64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePoc.Services.Abstraction", "src\Core\SamplePoc.Services.Abstraction\SamplePoc.Services.Abstraction.csproj", "{2AB21D66-39FB-4926-AF12-3307CA964D64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePoc.Domain", "src\Core\SamplePoc.Domain\SamplePoc.Domain.csproj", "{D8F72E26-A572-4CC5-A4BC-ECD0D7647A51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePoc.Domain", "src\Core\SamplePoc.Domain\SamplePoc.Domain.csproj", "{D8F72E26-A572-4CC5-A4BC-ECD0D7647A51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePoc.Contracts", "src\Core\SamplePoc.Contracts\SamplePoc.Contracts.csproj", "{1CDB77FE-F7F3-458A-AD4D-28636E71EAC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplePoc.Contracts", "src\Core\SamplePoc.Contracts\SamplePoc.Contracts.csproj", "{1CDB77FE-F7F3-458A-AD4D-28636E71EAC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3D470019-A373-446D-A253-C3BCA3C7B79E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplePoc.Test", "test\SamplePoc.Test\SamplePoc.Test.csproj", "{48BEE4A6-371A-40D8-9305-427AF2409C37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,10 @@ Global
 		{1CDB77FE-F7F3-458A-AD4D-28636E71EAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CDB77FE-F7F3-458A-AD4D-28636E71EAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CDB77FE-F7F3-458A-AD4D-28636E71EAC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48BEE4A6-371A-40D8-9305-427AF2409C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48BEE4A6-371A-40D8-9305-427AF2409C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48BEE4A6-371A-40D8-9305-427AF2409C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48BEE4A6-371A-40D8-9305-427AF2409C37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +70,7 @@ Global
 		{2AB21D66-39FB-4926-AF12-3307CA964D64} = {7109ABCE-9946-4915-9372-CC261FA9A292}
 		{D8F72E26-A572-4CC5-A4BC-ECD0D7647A51} = {7109ABCE-9946-4915-9372-CC261FA9A292}
 		{1CDB77FE-F7F3-458A-AD4D-28636E71EAC9} = {7109ABCE-9946-4915-9372-CC261FA9A292}
+		{48BEE4A6-371A-40D8-9305-427AF2409C37} = {3D470019-A373-446D-A253-C3BCA3C7B79E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADE03AE4-523C-418F-A407-56868D6F83C3}

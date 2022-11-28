@@ -29,8 +29,18 @@ namespace SamplePoc.Sql.Repositories
 
         public async Task BulkAddAsync(IEnumerable<Campaign> campaigns)
         {
-            var bulkAddTasks = campaigns.Select(x => AddAsync(x));
-            await Task.WhenAll(bulkAddTasks.ToArray());
+            foreach (var campaign in campaigns)
+            {
+                var keywordIds = campaign.Keywords.Select(x => x.Id).ToHashSet();
+                var campaignEntity = await _dbContext.Campaigns.AddAsync(campaign.ToEntity());
+                var keywordsPrimary = await _dbContext.KeywordsPrimaries.Where(x => keywordIds.Contains(x.Id)).ToListAsync();
+
+                keywordsPrimary.ForEach(keyword => keyword.CampaignsKeywords.Add(new Entities.CampaignsKeyword
+                {
+                    KeywordsPrimary = keyword,
+                    Campaign = campaignEntity.Entity
+                }));
+            }
         }
 
         public async Task DeleteAsync(int id)
