@@ -16,21 +16,15 @@ namespace SamplePoc.Sql.Repositories
 
         public async Task<Client> GetAsync(int id)
         {
-            var clientEntity = await _dbContext.Clients.Include(c => c.ClientsCampaigns).Where(x => x.Id == id).SingleOrDefaultAsync();
-
-            if (clientEntity != null)
-            {
-                var campaignIds = clientEntity.ClientsCampaigns.Select(x => x.CampaignId).ToHashSet();
-                var campaigns = await _dbContext.Campaigns.Include(c => c.CampaignsKeywords).Where(c => campaignIds.Contains(c.Id)).ToListAsync();
-
-                foreach (var campaign in campaigns)
-                {
-                    var keywordIds = campaign.CampaignsKeywords.Select(x => x.KeywordsPrimaryId).ToHashSet();
-                    var campaignsKeywords = await _dbContext.CampaignsKeywords.Include(x => x.KeywordsPrimary).Where(x => keywordIds.Contains(x.KeywordsPrimaryId)).ToListAsync();
-                    var keywordPrimaries = await _dbContext.KeywordsPrimaries.Include(x => x.KeywordsSourcePrimaries).Where(x => keywordIds.Contains(x.Id)).ToListAsync();
-                    await _dbContext.KeywordsSourcePrimaries.Include(x => x.PrimarySource).Where(x => keywordIds.Contains(x.KeywordsPrimaryId)).ToListAsync();
-                }
-            }
+            var clientEntity = await _dbContext.Clients
+                .Include(clients => clients.ClientsCampaigns)
+                .ThenInclude(clientsCampaigns => clientsCampaigns.Campaign)
+                .ThenInclude(campaign => campaign.CampaignsKeywords)
+                .ThenInclude(campaignsKeywords => campaignsKeywords.KeywordsPrimary)
+                .ThenInclude(keywordsPrimary => keywordsPrimary.KeywordsSourcePrimaries)
+                .ThenInclude(keywordsSourcePrimaries => keywordsSourcePrimaries.PrimarySource)
+                .Where(client => client.Id == id)
+                .SingleOrDefaultAsync();
 
             return clientEntity.ToDomain();
         }

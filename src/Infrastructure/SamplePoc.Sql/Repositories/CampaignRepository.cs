@@ -55,30 +55,25 @@ namespace SamplePoc.Sql.Repositories
 
         public async Task<Campaign> GetAsync(int id)
         {
-            var campaign = await _dbContext.Campaigns.Include(x => x.CampaignsKeywords).Where(x => x.Id == id).SingleOrDefaultAsync();
-
-            if (campaign != null)
-            {
-                var keywordIds = campaign.CampaignsKeywords.Select(x => x.KeywordsPrimaryId).ToHashSet();
-                var campaignsKeywords = await _dbContext.CampaignsKeywords.Include(x => x.KeywordsPrimary).Where(x => keywordIds.Contains(x.KeywordsPrimaryId)).ToListAsync();
-                var keywordPrimaries = await _dbContext.KeywordsPrimaries.Include(x => x.KeywordsSourcePrimaries).Where(x => keywordIds.Contains(x.Id)).ToListAsync();
-                await _dbContext.KeywordsSourcePrimaries.Include(x => x.PrimarySource).Where(x => keywordIds.Contains(x.KeywordsPrimaryId)).ToListAsync();
-            }
+            var campaign = await _dbContext.Campaigns
+                .Include(campaign => campaign.CampaignsKeywords)
+                .ThenInclude(campaignKeywords => campaignKeywords.KeywordsPrimary)
+                .ThenInclude(keywordsPrimary => keywordsPrimary.KeywordsSourcePrimaries)
+                .ThenInclude(keywordsSourcePrimaries => keywordsSourcePrimaries.PrimarySource)
+                .Where(campaign => campaign.Id == id)
+                .SingleOrDefaultAsync();
 
             return campaign.ToDomain();
         }
 
         public async Task<IEnumerable<Campaign>> GetAllAsync()
         {
-            var campaigns = await _dbContext.Campaigns.Include(x => x.CampaignsKeywords).ToListAsync();
-
-            foreach (var campaign in campaigns)
-            {
-                var keywordIds = campaign.CampaignsKeywords.Select(x => x.KeywordsPrimaryId).ToHashSet();
-                var campaignsKeywords = await _dbContext.CampaignsKeywords.Include(x => x.KeywordsPrimary).Where(x => keywordIds.Contains(x.KeywordsPrimaryId)).ToListAsync();
-                var keywordPrimaries = await _dbContext.KeywordsPrimaries.Include(x => x.KeywordsSourcePrimaries).Where(x => keywordIds.Contains(x.Id)).ToListAsync();
-                await _dbContext.KeywordsSourcePrimaries.Include(x => x.PrimarySource).Where(x => keywordIds.Contains(x.KeywordsPrimaryId)).ToListAsync();
-            }
+            var campaigns = await _dbContext.Campaigns
+                .Include(campaigns => campaigns.CampaignsKeywords)
+                .ThenInclude(campaignsKeywords => campaignsKeywords.KeywordsPrimary)
+                .ThenInclude(keywordsPrimary => keywordsPrimary.KeywordsSourcePrimaries)
+                .ThenInclude(keywordsSourcePrimaries => keywordsSourcePrimaries.PrimarySource)
+                .ToListAsync();
 
             return campaigns.ToDomain();
         }
