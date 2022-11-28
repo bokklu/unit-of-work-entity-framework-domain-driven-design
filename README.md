@@ -35,11 +35,12 @@ The app comes with swagger out of the box.
 
 <br>
 <h1>Project Structure</h1>
+
 The project is split into the following layers:
 - Host Layer [This is where the startup host project will be found.]
 - Application Layer [This is where you will be able to find the Services interacting with the Domain and Infra layer.]
 - Infrastructure Layer [Here you will find the SQL repositories. This layer will deal with external infra dependencies. This layer will only be invoked by the Application Layer]
-- Domain Layer [Here you will find the Domain models defined for our domain. Any mutator methods on the models should be placed here. ]
+- Domain Layer [Here you will find the Domain models defined for our domain. Any mutator methods on the models should be placed here.
 
 <br>
 <h1>How to Setup</h1>
