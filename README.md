@@ -1,4 +1,4 @@
-# poc-ddd-uow
+# unit-of-work-entity-framework-domain-driven-design
 <h1>Overview</h1>
 
 A sample proof of concept app using Domain Driven Design, Unit of Work pattern and Entity Framework, written in .NET 6.0. The App is written using the async/await pattern [Tasks] to achieve asynchronous programming.
