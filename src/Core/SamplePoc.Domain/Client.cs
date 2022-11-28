@@ -25,5 +25,8 @@
 
         public static Client Create(int id, string name, string description, string url, DateTime modifiedDate, string modifiedBy, bool active, IEnumerable<Campaign> campaigns)
             => new(id, name, description, url, modifiedDate, modifiedBy, active, campaigns);
+
+        #region Domain Methods
+        #endregion
     }
 }

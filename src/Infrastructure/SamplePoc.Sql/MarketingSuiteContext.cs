@@ -1,17 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SamplePoc.Sql.Entities;
+using SamplePoc.Sql.Options;
 
 namespace SamplePoc.Sql;
 
 public partial class MarketingSuiteContext : DbContext
 {
+    private readonly string _sqlConnection;
+
     public MarketingSuiteContext()
     {
     }
 
-    public MarketingSuiteContext(DbContextOptions<MarketingSuiteContext> options)
+    public MarketingSuiteContext(DbContextOptions<MarketingSuiteContext> options, IOptions<SqlOptions> sqlOptions)
         : base(options)
     {
+        _sqlConnection = sqlOptions.Value.SqlConnection;
     }
 
     public virtual DbSet<Campaign> Campaigns { get; set; }
@@ -29,7 +34,7 @@ public partial class MarketingSuiteContext : DbContext
     public virtual DbSet<SourcePrimary> SourcePrimaries { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=localhost;User ID=SA;Password=Secret1234;Database=MarketingSuite;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer(_sqlConnection);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

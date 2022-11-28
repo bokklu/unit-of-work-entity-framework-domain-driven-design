@@ -26,5 +26,8 @@
 
         public static KeywordSource CreateFromRequest(short id)
             => new(id, default, default, default, default, default, default);
+
+        #region Domain Methods
+        #endregion
     }
 }

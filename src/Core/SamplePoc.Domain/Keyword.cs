@@ -27,5 +27,8 @@
 
         public static Keyword CreateFromId(long id)
             => new(id, default, default, default, default, Enumerable.Empty<KeywordSource>());
+
+        #region Domain Methods
+        #endregion
     }
 }

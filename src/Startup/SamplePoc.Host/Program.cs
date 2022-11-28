@@ -5,6 +5,7 @@ using SamplePoc.Host.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder
+    .AddOptions()
     .AddDomain()
     .AddApi();
 

@@ -5,6 +5,7 @@ using SamplePoc.Contracts.Request;
 using SamplePoc.Host.Validators;
 using SamplePoc.Services.Extensions;
 using SamplePoc.Sql.Extensions;
+using SamplePoc.Sql.Options;
 
 namespace SamplePoc.Host.Extensions
 {
@@ -30,6 +31,13 @@ namespace SamplePoc.Host.Extensions
         {
             builder.Services.AddSql();
             builder.Services.AddServices();
+
+            return builder;
+        }
+
+        public static WebApplicationBuilder AddOptions(this WebApplicationBuilder builder)
+        {
+            builder.Services.ConfigureOptions<SqlConfigureOptions>();
 
             return builder;
         }

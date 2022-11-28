@@ -27,7 +27,7 @@
         public static Campaign CreateFromRequest(int id, string name, string description, bool active, DateTime modifiedDate, string modifiedBy, IEnumerable<long> keywordIds)
             => new(id, name, description, active, modifiedDate, modifiedBy, keywordIds.Select(Keyword.CreateFromId));
 
-        #region Include Domain Mutators here
+        #region Domain Methods
         #endregion
     }
 }
