@@ -7,6 +7,6 @@
         public DateTime ModifiedDate { get; init; }
         public string ModifiedBy { get; init; }
         public bool Active { get; init; }
-        public IEnumerable<short> PrimarySources { get; init; }
+        public IEnumerable<KeywordSourceResponse> PrimarySources { get; init; }
     }
 }

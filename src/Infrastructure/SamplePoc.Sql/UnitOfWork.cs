@@ -8,6 +8,7 @@ namespace SamplePoc.Sql
         private readonly MarketingSuiteContext _dbContext;
         private ICampaignRepository _campaignRepository;
         private IKeywordRepository _keywordRepository;
+        private IClientRepository _clientRepository;
 
         public UnitOfWork(MarketingSuiteContext dbContext)
         {
@@ -17,6 +18,8 @@ namespace SamplePoc.Sql
         public ICampaignRepository CampaignRepository { get { return _campaignRepository ??= new CampaignRepository(_dbContext); } }
 
         public IKeywordRepository KeywordRepository { get { return _keywordRepository ??= new KeywordRepository(_dbContext); } }
+
+        public IClientRepository ClientRepository { get { return _clientRepository ??= new ClientRepository(_dbContext); } }
 
         public async Task CommitAsync() => await _dbContext.SaveChangesAsync();
 

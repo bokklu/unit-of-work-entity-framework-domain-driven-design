@@ -1,5 +1,7 @@
-﻿using SamplePoc.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using SamplePoc.Domain;
 using SamplePoc.Services.Abstraction;
+using SamplePoc.Sql.Entities;
 using SamplePoc.Sql.Extensions;
 
 namespace SamplePoc.Sql.Repositories
@@ -15,8 +17,9 @@ namespace SamplePoc.Sql.Repositories
 
         public async Task AddAsync(Keyword keyword)
         {
+            var primarySourceIds = keyword.PrimarySources.Select(x => x.Id).ToHashSet();
             var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
-            var primarySources = _dbContext.SourcePrimaries.Where(x => keyword.PrimarySources.Contains(x.Id)).ToList();
+            var primarySources = await _dbContext.SourcePrimaries.Where(x => primarySourceIds.Contains(x.Id)).ToListAsync();
 
             primarySources.ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
             {
@@ -39,28 +42,28 @@ namespace SamplePoc.Sql.Repositories
 
         public async Task<Keyword> GetAsync(long id)
         {
-            var keywordPrimary = await _dbContext.KeywordsPrimaries.FindAsync(id);
+            var keywordPrimary = await _dbContext.KeywordsPrimaries.Include(x => x.KeywordsSourcePrimaries).Where(x => x.Id == id).SingleOrDefaultAsync();
 
             if (keywordPrimary != null)
             {
-                var keywordSourcePrimaryIds = _dbContext.KeywordsSourcePrimaries.Where(x => x.KeywordsPrimaryId == id).ToList();
-                keywordPrimary.KeywordsSourcePrimaries = keywordSourcePrimaryIds;
+                var primarySourceIds = keywordPrimary.KeywordsSourcePrimaries.Select(x => x.PrimarySourceId).ToHashSet();
+                await _dbContext.KeywordsSourcePrimaries.Include(x => x.PrimarySource).Where(x => primarySourceIds.Contains(x.PrimarySourceId)).ToListAsync();
             }
 
             return keywordPrimary.ToDomain();
         }
 
-        public Task<IEnumerable<Keyword>> GetAllAsync()
+        public async Task<IEnumerable<Keyword>> GetAllAsync()
         {
-            var keywordsPrimary = _dbContext.KeywordsPrimaries.ToList();
+            var keywordsPrimary = await _dbContext.KeywordsPrimaries.Include(x => x.KeywordsSourcePrimaries).ToListAsync();
 
-            keywordsPrimary.ForEach(kp =>
+            foreach (var keywordPrimary in keywordsPrimary)
             {
-                var sourcePrimaries = _dbContext.KeywordsSourcePrimaries.Where(sp => sp.KeywordsPrimaryId == kp.Id).ToList();
-                kp.KeywordsSourcePrimaries = sourcePrimaries;
-            });
+                var primarySourceIds = keywordPrimary.KeywordsSourcePrimaries.Select(x => x.PrimarySourceId).ToHashSet();
+                _dbContext.KeywordsSourcePrimaries.Include(x => x.PrimarySource).Where(x => primarySourceIds.Contains(x.PrimarySourceId)).ToList();
+            }
 
-            return Task.FromResult(keywordsPrimary.ToDomain());
+            return keywordsPrimary.ToDomain();
         }
 
         public async Task UpdateAsync(Keyword keyword)

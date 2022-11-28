@@ -4,6 +4,7 @@
     {
         ICampaignRepository CampaignRepository { get; }
         IKeywordRepository KeywordRepository { get; }
+        IClientRepository ClientRepository { get; }
         Task CommitAsync();
         Task RollbackAsync();
     }

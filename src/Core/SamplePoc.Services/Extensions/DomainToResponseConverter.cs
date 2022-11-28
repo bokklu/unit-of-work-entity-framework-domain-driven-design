@@ -14,7 +14,7 @@
                 Active = campaign.Active,
                 ModifiedBy = campaign.ModifiedBy,
                 ModifiedDate = campaign.ModifiedDate,
-                KeywordIds = campaign.KeywordIds
+                Keywords = campaign.Keywords.ToResponse()
             };
         }
 
@@ -32,9 +32,28 @@
                 ModifiedBy = keyword.ModifiedBy,
                 ModifiedDate = keyword.ModifiedDate,
                 Active = keyword.Active,
-                PrimarySources = keyword.PrimarySources
+                PrimarySources = keyword.PrimarySources.ToResponse()
             };
         }
+
+        public static Contracts.Response.KeywordSourceResponse ToResponse(this Domain.KeywordSource keywordSource)
+        {
+            if (keywordSource == null) return null;
+
+            return new Contracts.Response.KeywordSourceResponse
+            {
+                Id = keywordSource.Id,
+                Name = keywordSource.Name,
+                Description = keywordSource.Description,
+                Active = keywordSource.Active,
+                Url = keywordSource.Url,
+                ModifiedBy = keywordSource.ModifiedBy,
+                ModifiedDate = keywordSource.ModifiedDate
+            };
+        }
+
+        public static IEnumerable<Contracts.Response.KeywordSourceResponse> ToResponse(this IEnumerable<Domain.KeywordSource> keywordSources)
+            => keywordSources.Select(x => x.ToResponse());
 
         public static IEnumerable<Contracts.Response.KeywordResponse> ToResponse(this IEnumerable<Domain.Keyword> keywords)
             => keywords.Select(x => x.ToResponse());

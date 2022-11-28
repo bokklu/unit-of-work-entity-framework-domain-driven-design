@@ -9,6 +9,7 @@ namespace SamplePoc.Services.Extensions
         {
             services.AddScoped<ICampaignService, CampaignService>();
             services.AddScoped<IKeywordService, KeywordService>();
+            services.AddScoped<IClientService, ClientService>();
 
             return services;
         }
