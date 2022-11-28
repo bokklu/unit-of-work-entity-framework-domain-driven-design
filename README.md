@@ -42,5 +42,22 @@ The project is split into the following layers:
 - Domain Layer [Here you will find the Domain models defined for our domain. Any mutator methods on the models should be placed here. ]
 
 <br>
+<h1>How to Setup</h1>
+
+The project depends on the MSSQL database called MarketingSuite.
+
+If you already have a live MSSQL database created, you will need to only change the connection string in the appsettings.Development.json under the ConnectionStrings => SqlConnection section.
+
+If you don't have the MSSQL server installed, there is a docker-compose.yml file which can be run with the following command:
+
+```
+docker-compose up -d
+```
+
+The above command will only setup the MSSQL server, it is up to you to then create the database and run the GenerateSQL.sql manually on the docker MSSQL server.
+
+Don't forget to then change the connection string to point to the local docker MSSQL Server.
+
+<br>
 <h1>Testing</h1>
 Under the root directory, you will find a test folder that will encapsulate all unit tests. The testing framework installed is NUnit.
