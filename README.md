@@ -62,3 +62,8 @@ Don't forget to then change the connection string to point to the local docker M
 <br>
 <h1>Testing</h1>
 Under the root directory, you will find a test folder that will encapsulate all unit tests. The testing framework installed is NUnit.
+
+<br>
+<h1>Database Diagram</h1>
+![image](https://user-images.githubusercontent.com/26428189/204377583-44b31341-be37-447a-954d-c6ee31cbe44c.png)
+
