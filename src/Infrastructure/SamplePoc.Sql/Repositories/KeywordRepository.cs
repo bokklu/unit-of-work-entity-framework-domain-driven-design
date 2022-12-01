@@ -42,7 +42,11 @@ namespace SamplePoc.Sql.Repositories
                 var primarySourceIds = keyword.PrimarySources.Select(x => x.Id).ToHashSet();
                 var keywordExists = await _dbContext.KeywordsPrimaries.AnyAsync(x => x.Name.Equals(keyword.Name));
 
-                if (keywordExists) validations.Add($"Keyword '{keyword.Name}' already exists"); 
+                if (keywordExists)
+                {
+                    validations.Add($"Keyword '{keyword.Name}' already exists");
+                    continue;
+                }
 
                 var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
                 var primarySources = await _dbContext.SourcePrimaries.Where(x => primarySourceIds.Contains(x.Id)).ToListAsync();
