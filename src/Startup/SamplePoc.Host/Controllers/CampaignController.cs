@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SamplePoc.Contracts.Request;
+using SamplePoc.Contracts.Response;
 using SamplePoc.Services.Abstraction;
 using SamplePoc.Services.Extensions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -58,7 +59,7 @@ namespace SamplePoc.Host.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var validationErrors = new ValidationResponse { Messages = validationResult.Errors.Select(x => x.ErrorMessage) };
                     return BadRequest(validationErrors);
                 }
 
@@ -81,7 +82,7 @@ namespace SamplePoc.Host.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var validationErrors = new ValidationResponse { Messages = validationResult.Errors.Select(x => x.ErrorMessage) };
                     return BadRequest(validationErrors);
                 }
 
@@ -105,7 +106,7 @@ namespace SamplePoc.Host.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var validationErrors = new ValidationResponse { Messages = validationResult.Errors.Select(x => x.ErrorMessage) };
                     return BadRequest(validationErrors);
                 }
 

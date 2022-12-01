@@ -18,10 +18,11 @@ namespace SamplePoc.Services
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task AddAsync(Keyword keyword)
+        public async Task<bool> AddAsync(Keyword keyword)
         {
-            await _unitOfWork.KeywordRepository.AddAsync(keyword);
+            var keywordExists = await _unitOfWork.KeywordRepository.AddAsync(keyword);
             await _unitOfWork.CommitAsync();
+            return keywordExists;
         }
 
         public async Task BulkAddAsync(IEnumerable<Keyword> keywords)
@@ -48,6 +49,13 @@ namespace SamplePoc.Services
         {
             await _unitOfWork.KeywordRepository.UpdateAsync(keyword);
             await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<IEnumerable<Keyword>> SearchAsync(string keywordName)
+        {
+            var maybeKeywords = await _unitOfWork.KeywordRepository.SearchAsync(keywordName);
+            await _unitOfWork.CommitAsync();
+            return maybeKeywords;
         }
     }
 }

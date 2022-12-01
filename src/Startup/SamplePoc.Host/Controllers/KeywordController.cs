@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SamplePoc.Contracts.Request;
+using SamplePoc.Contracts.Response;
 using SamplePoc.Services.Abstraction;
 using SamplePoc.Services.Extensions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -58,12 +59,12 @@ namespace SamplePoc.Host.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var validationErrors = new ValidationResponse { Messages = validationResult.Errors.Select(x => x.ErrorMessage) };
                     return BadRequest(validationErrors);
                 }
 
-                await _keywordService.AddAsync(keyword.ToDomain());
-                return NoContent();
+                var keywordExists = await _keywordService.AddAsync(keyword.ToDomain());
+                return keywordExists ? BadRequest(new ValidationResponse { Messages = new List<string>{"Keyword already exists"}}) : NoContent();
             });
         }
 
@@ -81,7 +82,7 @@ namespace SamplePoc.Host.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var validationErrors = new ValidationResponse { Messages = validationResult.Errors.Select(x => x.ErrorMessage) };
                     return BadRequest(validationErrors);
                 }
 
@@ -104,7 +105,7 @@ namespace SamplePoc.Host.Controllers
 
                 if (!validationResult.IsValid)
                 {
-                    var validationErrors = validationResult.Errors.Select(x => x.ErrorMessage);
+                    var validationErrors = new ValidationResponse { Messages = validationResult.Errors.Select(x => x.ErrorMessage) };
                     return BadRequest(validationErrors);
                 }
 
@@ -142,6 +143,22 @@ namespace SamplePoc.Host.Controllers
                 if (id <= 0) return BadRequest();
                 var maybeKeyword = await _keywordService.GetAsync(id);
                 return maybeKeyword == null ? NotFound() : Ok(maybeKeyword.ToResponse());
+            });
+        }
+
+        [HttpGet]
+        [ActionName("search")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Keyword retrieved successfully.")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Bad Request.")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Entity not found.")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Technical Error.")]
+        public Task<IActionResult> SearchAsync(string keywordName)
+        {
+            return HandleRequestAsync(async () =>
+            {
+                if (string.IsNullOrEmpty(keywordName)) return BadRequest();
+                var maybeKeywords = await _keywordService.SearchAsync(keywordName);
+                return !maybeKeywords.Any() ? NotFound() : Ok(maybeKeywords.ToResponse());
             });
         }
     }

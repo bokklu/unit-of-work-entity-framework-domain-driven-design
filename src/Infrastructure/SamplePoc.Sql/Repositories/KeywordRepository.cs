@@ -14,9 +14,14 @@ namespace SamplePoc.Sql.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Keyword keyword)
+        public async Task<bool> AddAsync(Keyword keyword)
         {
             var primarySourceIds = keyword.PrimarySources.Select(x => x.Id).ToHashSet();
+
+            var keywordExists = await _dbContext.KeywordsPrimaries.AnyAsync(x => x.Name.Equals(keyword.Name));
+
+            if (keywordExists) return true;
+
             var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
             var primarySources = await _dbContext.SourcePrimaries.Where(x => primarySourceIds.Contains(x.Id)).ToListAsync();
 
@@ -25,6 +30,8 @@ namespace SamplePoc.Sql.Repositories
                 PrimarySource = source,
                 KeywordsPrimary = keywordPrimaryEntity.Entity
             }));
+
+            return false;
         }
 
         public async Task BulkAddAsync(IEnumerable<Keyword> keywords)
@@ -81,6 +88,17 @@ namespace SamplePoc.Sql.Repositories
                 keywordPrimary.ModifiedBy = keyword.ModifiedBy;
                 keywordPrimary.ModifiedDate = keyword.ModifiedDate;
             }
+        }
+
+        public async Task<IEnumerable<Keyword>> SearchAsync(string keywordName)
+        {
+            var keywordsPrimaries = await _dbContext.KeywordsPrimaries
+                .Include(keywordsPrimaries => keywordsPrimaries.KeywordsSourcePrimaries)
+                .ThenInclude(keywordsSourcePrimaries => keywordsSourcePrimaries.PrimarySource)
+                .Where(keywordPrimary => keywordPrimary.Name.Contains(keywordName))
+                .ToListAsync();
+
+            return keywordsPrimaries.ToDomain();
         }
     }
 }
