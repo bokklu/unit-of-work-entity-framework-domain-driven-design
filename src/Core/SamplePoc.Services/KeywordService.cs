@@ -25,10 +25,13 @@ namespace SamplePoc.Services
             return keywordExists;
         }
 
-        public async Task BulkAddAsync(IEnumerable<Keyword> keywords)
+        public async Task<IEnumerable<string>> BulkAddAsync(IEnumerable<Keyword> keywords)
         {
-            await _unitOfWork.KeywordRepository.BulkAddAsync(keywords);
+            var validations = await _unitOfWork.KeywordRepository.BulkAddAsync(keywords);
+            if (validations.Any()) return validations;
+
             await _unitOfWork.CommitAsync();
+            return validations;
         }
 
         public async Task<Keyword> GetAsync(long id)

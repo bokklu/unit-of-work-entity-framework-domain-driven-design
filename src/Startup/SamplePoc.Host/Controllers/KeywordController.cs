@@ -86,8 +86,8 @@ namespace SamplePoc.Host.Controllers
                     return BadRequest(validationErrors);
                 }
 
-                await _keywordService.BulkAddAsync(keywords.ToDomain());
-                return NoContent();
+                var validations = await _keywordService.BulkAddAsync(keywords.ToDomain());
+                return validations.Any() ? BadRequest(new ValidationResponse { Messages = validations }) : NoContent();
             });
         }
 

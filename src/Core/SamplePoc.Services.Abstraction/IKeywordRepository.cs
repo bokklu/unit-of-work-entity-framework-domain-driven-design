@@ -6,7 +6,7 @@ namespace SamplePoc.Services.Abstraction
     {
         Task DeleteAsync(long id);
         Task<bool> AddAsync(Keyword keyword);
-        Task BulkAddAsync(IEnumerable<Keyword> keywords);
+        Task<IEnumerable<string>> BulkAddAsync(IEnumerable<Keyword> keywords);
         Task<Keyword> GetAsync(long id);
         Task<IEnumerable<Keyword>> GetAllAsync();
         Task UpdateAsync(Keyword keyword);

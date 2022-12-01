@@ -33,14 +33,16 @@ namespace SamplePoc.Sql.Repositories
             return false;
         }
 
-        public async Task BulkAddAsync(IEnumerable<Keyword> keywords)
+        public async Task<IEnumerable<string>> BulkAddAsync(IEnumerable<Keyword> keywords)
         {
+            var validations = new List<string>();
+
             foreach (var keyword in keywords)
             {
                 var primarySourceIds = keyword.PrimarySources.Select(x => x.Id).ToHashSet();
                 var keywordExists = await _dbContext.KeywordsPrimaries.AnyAsync(x => x.Name.Equals(keyword.Name));
 
-                if (keywordExists) continue;
+                if (keywordExists) validations.Add($"Keyword '{keyword.Name}' already exists"); 
 
                 var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
                 var primarySources = await _dbContext.SourcePrimaries.Where(x => primarySourceIds.Contains(x.Id)).ToListAsync();
@@ -51,6 +53,8 @@ namespace SamplePoc.Sql.Repositories
                     KeywordsPrimary = keywordPrimaryEntity.Entity
                 }));
             }
+
+            return validations;
         }
 
         public async Task DeleteAsync(long id)
