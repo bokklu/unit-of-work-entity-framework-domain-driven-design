@@ -64,7 +64,7 @@ namespace SamplePoc.Host.Controllers
                 }
 
                 var keywordExists = await _keywordService.AddAsync(keyword.ToDomain());
-                return keywordExists ? BadRequest(new ValidationResponse { Messages = new List<string>{"Keyword already exists"}}) : NoContent();
+                return keywordExists ? Ok(new ValidationResponse { Messages = new List<string>{"Keyword already exists"}}) : NoContent();
             });
         }
 
@@ -87,7 +87,7 @@ namespace SamplePoc.Host.Controllers
                 }
 
                 var validations = await _keywordService.BulkAddAsync(keywords.ToDomain());
-                return validations.Any() ? BadRequest(new ValidationResponse { Messages = validations }) : NoContent();
+                return validations.Any() ? Ok(new ValidationResponse { Messages = validations }) : NoContent();
             });
         }
 
