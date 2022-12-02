@@ -17,20 +17,42 @@ namespace SamplePoc.Sql.Repositories
         public async Task<bool> AddAsync(Keyword keyword)
         {
             var primarySourceIds = keyword.PrimarySources.Select(x => x.Id).ToHashSet();
-            var keywordExists = await _dbContext.KeywordsPrimaries.AnyAsync(x => x.Name.Equals(keyword.Name));
 
-            if (keywordExists) return true;
+            var keywordPrimary = await _dbContext.KeywordsPrimaries
+                .Include(keywordPrimary => keywordPrimary.KeywordsSourcePrimaries)
+                .Where(keywordPrimary => keywordPrimary.Name.Equals(keyword.Name))
+                .SingleOrDefaultAsync();
 
-            var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
             var primarySources = await _dbContext.SourcePrimaries.Where(x => primarySourceIds.Contains(x.Id)).ToListAsync();
 
-            primarySources.ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
+            if (keywordPrimary != null)
             {
-                PrimarySource = source,
-                KeywordsPrimary = keywordPrimaryEntity.Entity
-            }));
+                var existingKeywordSourceIds = keywordPrimary.KeywordsSourcePrimaries.Select(x => x.PrimarySourceId).ToHashSet();
+                
+                primarySources
+                    .Where(x => !existingKeywordSourceIds.Contains(x.Id))
+                    .ToList()
+                    .ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
+                    {
+                        PrimarySource = source,
+                        KeywordsPrimary = keywordPrimary
+                    }));
 
-            return false;
+                return true;
+            }
+            else
+            {
+                var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
+
+                primarySources
+                    .ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
+                    {
+                        PrimarySource = source,
+                        KeywordsPrimary = keywordPrimaryEntity.Entity
+                    }));
+
+                return false;
+            }
         }
 
         public async Task<IEnumerable<string>> BulkAddAsync(IEnumerable<Keyword> keywords)
@@ -40,22 +62,42 @@ namespace SamplePoc.Sql.Repositories
             foreach (var keyword in keywords)
             {
                 var primarySourceIds = keyword.PrimarySources.Select(x => x.Id).ToHashSet();
-                var keywordExists = await _dbContext.KeywordsPrimaries.AnyAsync(x => x.Name.Equals(keyword.Name));
 
-                if (keywordExists)
-                {
-                    validations.Add($"Keyword '{keyword.Name}' already exists");
-                    continue;
-                }
+                var keywordPrimary = await _dbContext.KeywordsPrimaries
+                    .Include(keywordPrimary => keywordPrimary.KeywordsSourcePrimaries)
+                    .Where(keywordPrimary => keywordPrimary.Name.Equals(keyword.Name))
+                    .SingleOrDefaultAsync();
 
-                var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
                 var primarySources = await _dbContext.SourcePrimaries.Where(x => primarySourceIds.Contains(x.Id)).ToListAsync();
 
-                primarySources.ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
+                if (keywordPrimary != null)
                 {
-                    PrimarySource = source,
-                    KeywordsPrimary = keywordPrimaryEntity.Entity
-                }));
+                    var existingKeywordSourceIds = keywordPrimary.KeywordsSourcePrimaries.Select(x => x.PrimarySourceId).ToHashSet();
+
+                    primarySources
+                        .Where(x => !existingKeywordSourceIds.Contains(x.Id))
+                        .ToList()
+                        .ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
+                        {
+                            PrimarySource = source,
+                            KeywordsPrimary = keywordPrimary
+                        }));
+
+                    validations.Add($"Keyword '{keyword.Name}' already exists");
+                }
+                else
+                {
+                    var keywordPrimaryEntity = await _dbContext.AddAsync(keyword.ToEntity());
+
+                    primarySources
+                        .ForEach(source => source.KeywordsSourcePrimaries.Add(new Entities.KeywordsSourcePrimary
+                        {
+                            PrimarySource = source,
+                            KeywordsPrimary = keywordPrimaryEntity.Entity
+                        }));
+                }
+
+                await _dbContext.SaveChangesAsync();
             }
 
             return validations;

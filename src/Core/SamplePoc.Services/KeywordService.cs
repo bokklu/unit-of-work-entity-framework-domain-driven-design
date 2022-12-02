@@ -37,14 +37,12 @@ namespace SamplePoc.Services
         public async Task<Keyword> GetAsync(long id)
         {
             var maybeKeyword = await _unitOfWork.KeywordRepository.GetAsync(id);
-            await _unitOfWork.CommitAsync();
             return maybeKeyword;
         }
 
         public async Task<IEnumerable<Keyword>> GetAllAsync()
         {
             var maybeKeywords = await _unitOfWork.KeywordRepository.GetAllAsync();
-            await _unitOfWork.CommitAsync();
             return maybeKeywords;
         }
 
@@ -57,7 +55,6 @@ namespace SamplePoc.Services
         public async Task<IEnumerable<Keyword>> SearchAsync(string keywordName)
         {
             var maybeKeywords = await _unitOfWork.KeywordRepository.SearchAsync(keywordName);
-            await _unitOfWork.CommitAsync();
             return maybeKeywords;
         }
     }

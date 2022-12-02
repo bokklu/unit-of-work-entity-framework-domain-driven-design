@@ -39,14 +39,12 @@ namespace SamplePoc.Services
         public async Task<Campaign> GetAsync(int id)
         {
             var maybeCampaign = await _unitOfWork.CampaignRepository.GetAsync(id);
-            await _unitOfWork.CommitAsync();
             return maybeCampaign;
         }
 
         public async Task<IEnumerable<Campaign>> GetAllAsync()
         {
             var maybeCampaigns = await _unitOfWork.CampaignRepository.GetAllAsync();
-            await _unitOfWork.CommitAsync();
             return maybeCampaigns.ToList();
         }
     }

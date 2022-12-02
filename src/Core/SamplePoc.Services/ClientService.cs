@@ -15,7 +15,6 @@ namespace SamplePoc.Services
         public async Task<Client> GetAsync(int id)
         {
             var maybeClient = await _unitOfWork.ClientRepository.GetAsync(id);
-            await _unitOfWork.CommitAsync();
             return maybeClient;
         }
     }
